@@ -1,2 +1,16 @@
-theme: jekyll-theme-minimal
-title: Greg's Homepage
+title: Soertszy::Eng
+description: Helpful fragments and generalist musings
+plugins:
+  - jekyll-autoprefixer
+  - jekyll-seo-tag
+  - jekyll-sitemap
+exclude:
+  - docker-compose.yml
+
+sass:
+  sass_dir: assets/css
+
+excerpt_separator: <!--excerpt-above-->
+future: true
+
+
