@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+{% seo %}
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>{{ page.title }} - {{ site.title }}</title>
+    <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon.png">
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <header>
+      <div class="container">
+        <div class="row justify-content-centered">
+          <div class="col">
+          </div>
+          <div class="col-12">
+            {% include navbar.html %}
+          </div>
+          <div class="col">
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="row justify-content-centered">
+        <div class="col">
+        </div>
+        <div class="col-12">
+          <div class="container">
+            <div class="row">
+              <div class="col-8">
+                {{ content }}
+              </div>
+              <div class="col-4">
+                <div class="container">
+                  <div class="row">
+                    <div class="col">
+                      <h4>Posts</h4>
+                      <ul>
+                        {% for post in site.posts %}
+                          <li class="list-unstyled">
+                            <a href="{{ post.url }}">{{ post.title }}</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <h4>Categories</h4>
+                      <ul>
+                        {% for category in site.categories %}
+                        <li class="list-unstyled">
+                          {{ category[0] }}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+        </div>
+      </div>
+    </main>
+    <footer class="mt-auto">
+      <div class="container">
+        <div class="row justify-content-centered">
+          <div class="col"></div>
+          <div class="col-12"> 
+              {% include footer.html %}
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
