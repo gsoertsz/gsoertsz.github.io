@@ -1,5 +1,7 @@
 
-- name: Home
-  link: /index.html
+- name: Blog
+  link: /blog/index.html
 - name: About
   link: /about
+- name: Archive
+  link: /archive.html
