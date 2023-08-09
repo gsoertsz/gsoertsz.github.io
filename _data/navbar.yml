@@ -1,0 +1,7 @@
+
+- name: Articles
+  link: /blog/index.html
+- name: About
+  link: /about
+- name: Archive
+  link: /archive.html
