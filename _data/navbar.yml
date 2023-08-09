@@ -1,5 +1,5 @@
 
-- name: Blog
+- name: Articles
   link: /blog/index.html
 - name: About
   link: /about

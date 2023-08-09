@@ -1,0 +1,67 @@
+---
+layout: default
+title: Home
+---
+
+
+{% for post in paginator.posts %}
+  <h1 class="display-5"><a href="{{ post.url }}">{{ post.title }}</a></h1>
+  <p class="author">
+    <span class="date"><i>{{ post.date | date_to_long_string }}</i></span>
+  </p>
+  <div class="content">
+    {{ post.excerpt }}
+  </div>
+  <hr class="mt-4 mb-1"/>
+{% endfor %}
+
+{% if paginator.total_pages > 1 %}
+<nav>
+    <ul class="pagination">
+        <!-- handle previous page link -->
+        {% if paginator.previous_page %}
+            <li class="page-item">
+                <a href="{{ paginator.previous_page_path | relative_url }}">
+                    <span class="page-link">&laquo; Prev</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo; Prev</span>
+            </li>
+        {% endif %}
+
+        {% for page in (1..paginator.total_pages) %}
+            {% if page == paginator.page %}
+                <li class="page-item active">
+                    <span class="page-link"><em>{{ page }}</em></span>
+                </li>
+            {% elsif page == 1 %}
+                <li class="page-item">
+                    <a href="{{ '/blog' | relative_url }}">
+                        <span class="page-link"><em>{{ page }}</em><span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a href="{{ site.paginate_path | relative_url | replace: ':num', page }}">
+                        <span class="page-link"><em>{{ page }}</em></span>
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if paginator.next_page %}
+            <li class="page-item">
+                <a href="{{ paginator.next_page_path | relative_url }}">
+                    <span class="page-link">Next &raquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next &raquo;</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
