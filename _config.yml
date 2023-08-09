@@ -1,5 +1,5 @@
-title: Soertszy::Eng
-description: Helpful fragments and generalist musings
+title: Soertszy's Cloud, Data and Software Blog
+description: Soertszy's Cloud, Data and Software Blog
 plugins:
   - jekyll-autoprefixer
   - jekyll-seo-tag
