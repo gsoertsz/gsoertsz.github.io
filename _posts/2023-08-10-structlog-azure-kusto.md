@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Structlog in azure for fun and profit"
+title: "Structlog in Azure for fun and profit"
 categories: [python, structlog, azure, log_analytics, kusto]
 ---
 
