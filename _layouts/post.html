@@ -2,19 +2,16 @@
 layout: default
 ---
 <article class="post">
-
-  <h2>{{ page.title }}</h2>
-  <br/>
+  <h3>{{ page.title }}</h3>
   <div class="date">
     <time datetime="{{ post.date | date: "%Y-%m-%d" }}">{{ post.date | date_to_long_string }}</time>
     <i>{{ page.date | date: "%B %e, %Y" }}</i>
   </div>
   <div class="text">
-    Categories: {{ page.categories | join: ", " }}
+   <strong>Categories:</strong> {{ page.categories | join: ", " }}
   </div>
   <hr class="mt-2 mb-4"/>
   <div class="entry">
     {{ content }}
   </div>
-
 </article>
