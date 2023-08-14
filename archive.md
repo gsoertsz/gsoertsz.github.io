@@ -15,13 +15,13 @@ layout: default
     {% for y in unique_years %}
         {% assign this_years_posts = site.posts | where: "date", y %}
         <div class="row pt-4">
-            <div class="col-2">
+            <div class="col-2 mt-2">
                 <p>{{ y }}</p>
             </div>
             <div class="col">
             {% for p in this_years_posts %}
                 <div class="container">
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-2">
                             <span class="post-date">{{ p.date | date: "%b %-d" }}</span>
                         </div>
