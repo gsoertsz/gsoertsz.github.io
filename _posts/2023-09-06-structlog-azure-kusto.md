@@ -430,7 +430,7 @@ Let's unpack JSON `msg` field we parsed out of the log message received by Log A
     "x-forwarded-tlsversion": "1.2", 
     "x-original-url": "/api/Function?code=xxxxxxx", 
     "_Context__retry_context": "<azure_functions_worker.bindings.retrycontext.RetryContext object at 0x7f198ba00cd0>", 
-    "appid": "a0656ce0a8e1fc8f5986cfe73767bdba", 
+    "appid": "xxxxxxxxx", 
     "_Context__thread_local_storage": "<_thread._local object at 0x7f198b817f90>", 
     "function": "city_request_to_weather", 
     "_Context__invocation_id": "3c12f1fa-c1b8-47f7-b519-e7169b6500c7", 
