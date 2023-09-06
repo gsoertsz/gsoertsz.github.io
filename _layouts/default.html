@@ -22,6 +22,13 @@
     <meta charset="utf-8">
     <title>{{ page.title }} - {{ site.title }}</title>
     <link rel="stylesheet" href='{{ "/assets/css/main.css" | relative_url }}'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+    <!-- and it's easy to individually load additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+
+    <script>hljs.highlightAll();</script>
     <link rel="shortcut icon" type="image/png" href="/assets/favicon.png">
   </head>
   <body class="d-flex flex-column min-vh-100">
@@ -30,7 +37,7 @@
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- End Google Tag Manager (noscript) -->
     <header>
-      <div class="container">
+      <div class="container fixed-top">
         <div class="row justify-content-centered">
           <div class="col">
           </div>
@@ -43,12 +50,12 @@
       </div>
     </header>
     <main>
-      <div class="row justify-content-centered">
+      <div class="row justify-content-centered" style="margin-top: 20px;">
         <div class="col">
         </div>
         <div class="col-12">
           <div class="container">
-            <div class="row mb-10" style="margin-top: 10px">
+            <div class="row" style="margin-bottom: 65px; margin-top: 60px;">
               <div class="col-9 border-right" style="margin-left: 15px; margin-right: 15px;">
                 {{ content }}
               </div>
