@@ -4,14 +4,13 @@ title: Home
 ---
 
 {% for post in paginator.posts %}
-  <h3 class="display-6"><a href="{{ post.url }}">{{ post.title }}</a></h3>
-  <p class="author">
-    <span class="date"><i>{{ post.date | date_to_long_string }}</i></span>
-  </p>
-  <div class="content">
-    {{ post.excerpt }}
+  <div class="card mt-2 mb-2" >
+    <div class="card-body">
+        <h5 class="card-title"><a href="{{ post.url }}">{{ post.title }}</a></h5>
+        <h6 class="card-subtitle mb-2 text-muted"><span class="date"><i>{{ post.date | date_to_long_string }}</i></span></h6>
+        <p class="card-text">{{ post.excerpt }}</p>
+    </div>
   </div>
-  <hr class="mt-4 mb-1"/>
 {% endfor %}
 
 {% if paginator.total_pages > 1 %}
