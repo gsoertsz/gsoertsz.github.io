@@ -9,9 +9,11 @@ categories: [python, continuous_delivery, github_actions, semver]
 
 <!--excerpt-above-->
 
+TL;DR - all code for this discussion is available [here](https://github.com/gsoertsz/cli-bumpversion-example)
+
 Python has an incredibly low barrier to entry, and a broad range of applicability. You'll find it in almost every domain you are likely to encounter in a technical career, from embedded systems through to systems programming and infrastructure tooling; cloud API's, and DevOps, and into application development and data science, the language is indeed [ubiquitous](https://github.blog/2023-03-02-why-python-keeps-growing-explained/). As an aside, if you're not learning it now, please start. 
 
-In the DevOps context, we often reach for python when automating the deployment of our systems to cloud environments, and for interacting with the API's of tools that support of production environment ecosystems, particularly when they create (or exist in different) tooling domains.
+In the DevOps context, we often reach for python when automating the deployment of our systems to cloud environments, and for interacting with the API's of tools that support our production environment ecosystems, particularly when they create (or exist in different) tooling domains.
 
 It is just so easy, and therefore compelling to just 'cut a python script' to create a necessary automation shim, or cross tool integration, to make progress on our automation objectives.
 
@@ -25,32 +27,32 @@ However, python scripts in a DevOps context often become an unmaintainable night
 
 The above activities are all a necessary consequence of debugging python scripts in a CI/CD context, and they each involve latencies in the 10s of seconds to minutes. Putting aside observability frustrations, this is a well known, maddening and exhausting diagnostic loop that we've all suffered. For our purposes I'll call it the *"Python Script Debugging Cycle of Death"*, and obviously its something we wish to avoid. I confess to being a passionate developer productivity enthusiast / ergonomist, and the interpreter's approachability - `python -c ...` or `python my_script.py` - (its ability to execute arbitrary text as python code) is both a blessing and a curse. 
 
-The positives of this approachability are obvious; you can turn python towards all sizes of problem, from big to small. This allows you to right size your approach, in proportion to the problem as it manifests today. You don't need to bootstrap an entire eco-system to perform a small action or transformation, particularly if you use a framework with a strong API, and your solution is 3 lines long.
+The positives of this approachability are obvious; you can turn python towards all sizes of problem, from big to small. This allows you to right size your approach, in proportion to the problem as it manifests today. You don't need to bootstrap an entire eco-system to perform a small action or transformation, particularly if you use a framework with a strong API, and your solution is 3 lines long. A usable python interpreter is also included in most if not all linux distributions out there today.
 
 But in an enterprise context, problems don't usually stay the same size, particularly when platforms are under heavy development, or are evolving under maintenance. You may have started out with a small solution to a small problem, but if you've built something meaningful, the correlation between platform vitality and entropy, inevitably means you'll be revisiting 'small code' as you react to increasing demands. There'll be natural pressures to increase the complexity or responsibilities of fragments you've previously smacked together. Or more poignantly, as time and exposure continues, you'll perceive more of the problem space, or identify patterns that set your previous solution against a more expansive backdrop, putting it in a broader perspective. This perspective will force you to grapple with other software engineering principles such as DRY (don't repeat yourself), and SRP (single responsibility principle). Inevitably you'll look to re-architect your approach to exploit the discovered patterns and solve the problem more wholistically.
 
 I'll refer to this as the *"Fallacy of Small Enterprise Code".* Somewhat ironically, this fallacy is an observable consequence of the natural tendency for code to approach cleaner software architectures and higher levels of quality. This emergent property, in turn, is a direct consequence of hiring smart, experienced, principled software developers, to maintain and develop code in production over non-trivial periods. Without going into further detail, let's just exploit this property as a [philosophical razor](https://en.wikipedia.org/wiki/Philosophical_razor) (*"Soertsz's Razor"* anyone?) to fast-forward past the *"Fallacy of Small Enterprise Code"*, the *"Python Script Debugging Cycle of Death"*, and beyond python's mischieviously accessible interpreter to a seemingly inevitable and necessarily greater level of sophistication.
 
-Concurrently, in various application development situations, we may wish to share code across different teams, even in the context of an enterprise development team. When we reach for a library dependency or framework from the open source world, we spend quite a bit of time browsing the [public repositories](https://pypi.org/) looking for the appropriate library. 
+Concurrently, we all use 3rd party and open source libraries from the internet all the time. The DRY (Don't Repeat Yourself) mantra is almost beaten into us throughout our careers, and in some cases rolling your own solution when a battle hardened internet-grade library is available, is at best [ill advised](https://www.schneier.com/blog/archives/2011/04/schneiers_law.html). It is true that when evaluating the programming languages one might choose for a project or platform, we also take into account the language's library and dependency eco-system. In many cases, within an enterprise context, in various application development situations, we may have developed a library, a tool or a compelling framework that wish to share across different teams. When we reach for a library dependency or framework from the open source world, we spend quite a bit of time browsing the [public repositories](https://pypi.org/) looking for the appropriate library. 
 
 In evaluating good libraries, we would typically review and assess:
 
-- documentation
+- project documentation
 - vitality of the project - commit recency, maintenance activity
 - popularity - downloads, forks etc
 - software quality metrics - unit tests, coverage, build status, badges etc.
 
-Not until we get through the above, would we even dream of installing the dependency, `pip install`, and using the dependency with an `import` statement, even in an experimental capacity. We have a strong sense of what qualitative criteria we are using when evaluating a good library for our purposes.
+Not until we get through the above, would we even dream of installing the dependency with `pip install`, and using the dependency with an `import` statement, even in an experimental capacity. We have a strong sense of the qualitative criteria we are using when evaluating a good library for our purposes.
 
 Given the discussion, why then would we treat internal code, and code we wish to share, any differently from a package published publicly, particularly, when we want to accelerate our maturity past that in which we would suffer the ills of *"Small Enterprise Code"*? 
 
-If we can work with packages, published internally within an entrprise, in approximately the same way as we work with publicly available packages, this signals to the organization that your development team is serious in meeting the same standard to which public packages are held - the standard that makes them suitable for any one of us to choose, to support a workload that could be running in production tomorrow. This signal has the additional effect of attracting good engineers who are either interested in learning how to ship python code at a high standard, or are seasoned pythonistas who want to work in an environment that takes the language seriously. Interestingly, either way, the system of work is self reinforcing. 
+If we can work with packages, published internally within an entrprise, in approximately the same way as we work with publicly available packages, this signals to the organization that your development team is serious in meeting the same standard to which public packages are held - the standard that makes them suitable for any one of us to choose, to support a workload that could be running in production tomorrow. This signal has the additional effect of attracting good engineers who are either interested in learning how to ship python code at a high standard, or are seasoned pythonistas who want to work in an environment that takes the language seriously. Interestingly, either way, the system of work produces high quality packages, and is self reinforcing. Who wouldn't want a system of work like this?
 
-A convincing counter argument for not pursuing a system of work focussed on publishing python packages, is that it would absorb unaffordable engineering effort to achieve it. When set against the back drop of an unreceptive organisation, or one unappreciative or responsive to the inherent virtue of such as system, the situation can be likened to trying to *"perform Shakespeare to an empty theatre"* - folly, and a gross misallocation of skilled resources given the context.
+A convincing counter argument for not pursuing a system of work focussed on publishing python packages, is that it would absorb unaffordable engineering effort to achieve it. When set against the back drop of an unreceptive organisation, or one unappreciative or responsive to the inherent virtue of such a system, the situation can be likened to trying to *"perform Shakespeare to an empty theatre"* - folly, and a gross misallocation of skilled resources given the context.
 
 But the alternative for developers is worse, and there are a number of tools I'll cover, that can be easily integrated into python repositories of all kinds, that reduce the effort needed to establish the foundations of a package oriented system of work. It's not a perfect situation, but at the very least we set off in the right direction.
 
-So, when it comes to packaging python projects in an enterprise context:
+So, when it comes to packaging python projects in an enterprise context, we can begin with the following hypothesis:
 
 ---
 
@@ -60,7 +62,7 @@ So, when it comes to packaging python projects in an enterprise context:
 
 ### Producing packages in a continuous delivery context
 
-Continuous delivery distinguishes strongly between software release and software deployment. For example, v1.0.2 can be created, and may not be deployed to production (or any environment) until days, weeks or months later. In the mean time the software is published to a Binary Artefact Management system, awaiting the moment its downloaded by a deployment pipeline and deployed into a target runtime environment for whatever purpose (testing, production etc). Obviously, the longer the software remains undeployed, the more likely it is to be obsolete, especially in busy development period. While we might wish for high frequency deployment of small increments of software, in an enterprise context we can only deploy as fast as IT governance and change management ceremonies will allow.
+Continuous delivery distinguishes strongly between software release and software deployment. For example, v1.0.2 can be created, and may not be deployed to production (or any environment) until days, weeks or months later. In the mean time the software is published to a Binary Artefact Management system, awaiting the moment its downloaded by a deployment pipeline and deployed into a target runtime environment for whatever purpose (testing, production etc). Obviously, the longer the software remains undeployed, the more likely it is to be obsolete, especially in busy development periods. While we might wish for high frequency deployment of small increments of software, in an enterprise context we can only deploy as fast as IT governance and change management ceremonies will allow.
 
 Regardless, there may be sensible points at which functionality should be merged to a release line in SCM, and the software be made ready for release. Conceptually we want all our repositories to emit a stream of technology-specific, versioned, installable/deployable artefacts. The following requirements should also be met.
 
@@ -174,7 +176,7 @@ The resulting packages are installable just like any 3rd party dependency we may
 
 Once built, the python package is directly installable, and as the package was configured to expose some command line tools, the `hello` CLI tool is invokable directly after install. The fact that the tool was built in python becomes an implementation detail. The user experience with the software now starts to approximate what we would go through consuming something similar from a public site. The `dependencies` clause in the `pyproject.toml` file ensures any dependencies that are needed in the environment are installed automatically, so for the most part we don't have to worry about packaging these dependencies ourselves. Therefore, there are very few touchpoints required to get the tool running. Just a `pip install`. Splendid.
 
-By default `build`, will produce packages in a source distribution (sdist) format, and a more machine dependent wheel (whl) format. Source distributions are more portable across machine architectures in principal, and will build the source upon download. The wheel format avoids the need to build the package locally (and therefore the assumption that build tools such as `setuptools` and `venv`/`pyenv` and `pip` are available), but is machine dependent. It's constructive to publish both as part of a single publishing event. This allows consumers with the same machine architecture/OS as the publisher to consume an efficient packaging format. In a hetergenous OS/arch environment, the source distribution can be built where it is run, which means you don't have to support all the infra permutations out there, but the usage and installation takes a bit longer and requires some additional tools in the consumer python environment.
+By default, `build` will produce packages in a source distribution (sdist) format, and a more machine dependent wheel (whl) format. Source distributions are more portable across machine architectures in principal, and will build the source upon download. The wheel format avoids the need to build the package locally (and therefore the assumption that build tools such as `setuptools` and `venv`/`pyenv` and `pip` are available), but is machine dependent. It's constructive to publish both as part of a single publishing event. This allows consumers with the same machine architecture/OS as the publisher to consume an efficient packaging format. In a hetergenous OS/arch environment, the source distribution can be built where it is run, which means you don't have to support all the infra permutations out there, but the usage and installation takes a bit longer and requires some additional tools in the consumer python environment.
 
 Let's publish these artefacts to a Binary Artifact Management System such as Azure Artifact, via a github actions workflow.
 
@@ -189,7 +191,7 @@ Below is some of the github actions workflow for publishing the artefacts to Azu
 
 To the extent possible, in order to provide good traceability, all of the above activities should be performed together or not at all. Indeed, and in practice, any of the previous actions could fail, and if they do, there isn't likely to be a simple automated approach to recover. Despite this, if all of these occur you end up with superior traceability between built artefact and SCM commit via tag. From the point of view of auditing changes in production, this association is key.
 
-In the workflow below, we focus on a simple feature branching strategy. Basically, the default main branch is the target branch for all features. The merge of each feature branh to main, governed by a reviewed and approved pull request, should result in a newly versioned artefact. Developers aren't allowed to push changes directly to main, and must take a non-main branch (feature branch) to which their code updates are committed. This causes two complications.
+In the workflow below, we focus on a simple feature branching strategy. Basically, the default main branch is the target branch for all features. The merge of each feature branch to main, governed by a reviewed and approved pull request, should result in a newly versioned artefact. Developers aren't allowed to push changes directly to main, and must take a non-main branch (feature branch) to which their code updates are committed. This causes two complications.
 
 Firstly, if you wish to prevent developers from merging or committing directly to main without a pull request, you'll need to configure branch protection rules in github. This is fine, but your github workflow will also not be able to push upstream, any version related commits or tags due to those same restrictions. 
 
@@ -306,7 +308,7 @@ jobs:
 
 ```
 
-Let's see what, happens when we merge a change in github actions, when the artefact is published to Azure Artifact.
+Let's see what happens when we merge a change in github actions, when the artefact is published to Azure Artifact.
 
 Setting up a feed to receive your published artefact requires:
 
@@ -367,11 +369,11 @@ At this point, our repository automatically publishes a versioned artefact, and 
 
 [Semantic versioning](https://semver.org/), or 'semver' as its more commonly known, specifies a version string pattern that communicates the impactfulness of a change. It works on the basis that if you are going to version something, it's just as important to communicate what's changing between versions as it is to attribute a version to a known baseline. For example, an observer of an artifact that complies with semver, upon seeing a change from 1.0.1 to 1.0.2, noting a PATCH, would reason that they can rely on their client continuing to be compatible with 1.0.2. Contrariwise, a bump from 1.0.2 to 2.0.0 - MAJOR - implies breaking changes to the API. The observer is now informed that they would need to re-integrate their code to work with the new version.
 
-Of course there are no guarantees. A developer can easily introduce bugs, or incompatibilities disguised as PATCHes, and break their consumers. Obviously this is not in anyones best interest, but what the version bump should be between any two changes is still at the discretion of the developer. This makes sense, as they are most familiar with the changes - the most authoritative. We'll come back to the degree of inference needed to determine how changes of different shapes and sizes map down to the semver primitives MAJOR, MINOR and PATCH. 
+Of course there are no guarantees. A developer can easily introduce bugs, or incompatibilities disguised as PATCHes, and break their consumers. Obviously this is not in anyones best interest, but what the version bump should be between any two changes is still at the discretion of the developer. This makes sense, as they are most familiar with the changes - the most authoritative. 
 
 In python build parlance, the version information that get's included in the archive etc. is included in the `pyproject.toml` file, in the `version` directive. When you execute `python -m build` and `version = 1.0.5`, then the built artifact will be `artifact-name-1.0.5.tar.gz` etc. So, if we change the version, and wish to produce the corresponding artifact, we need to update this file as part of that process, generate a tag, commit the change in the `pyproject.toml` file, tag that commit with the version, push that commit (and its tags) to the release branch (then happily build the package subsequently). This is where it can get complicated to work with packages, and it obviously needs to be automated.
 
-Reflecting on the earlier discussion, we considered a changelog as being a key qualitative element of a good python package. Changelogs are actually a fundamental way in which we reason about whether a specific version of a package is correct for our purposes. A changelog should describe the specific changes that were applied to a package between versions, and whether the fix you seek is included in a specific version can only be gleaned from the changelog.
+Additionally, reflecting on the earlier discussion, we considered a changelog as being a key qualitative element of a good python package. Changelogs are actually a fundamental way in which we reason about whether a specific version of a package is correct for our purposes. A changelog should describe the specific changes that were applied to a package between versions, and whether the fix you seek is included in a specific version can only be gleaned from the changelog.
 
 Changelog information is available in the messages attributed to each commit between tagged or released versions, and so it makes sense that an update to a change log is a direct consequence of computing the new version, publishing an artefact and ensuring traceability.
 
@@ -540,13 +542,210 @@ So:
 
 ### Documentation with README.md and Sphinx
 
-Well built packages, that adhere to internet-grade standards for versioning and changelogs, are useless unless users are able to read c
+Well built packages, that adhere to internet-grade standards for versioning and changelogs, are useless unless users are able to find details about what the package does and how to use it. This is where good package documentation comes in.
+
+We've already seen that Azure Artifact understands the `pyproject.toml` and the `README.md` file when surfacing metadata about a published package. So in reality its possible to at least use the `README.md` file to provide overview information to help the user at an introductory level.
+
+If we are looking for more details, say about the API, or how best to use the tool, framework or library, and specifically, considerations or caveats in relation to the implementation, the `README.md` is likely not going to be enough. The `README.md` is also something that's maintained separately from the code. Ideally, we'd like to write comments inline with the code, precisely where its relevant, and then produce user documentation from those comments.
+
+This is where [Sphinx](https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html) comes in.
+
+Again, incorporating Sphinx into the build workflow is very straightforward. It starts by creating a `docs` directory in your project, installing sphinx with `pip install sphinx`, and then running `sphinx-quickstart`. This will walk you through creating the basic configuration. Be sure to specify the documentation source and build directories are `docs/source` and `docs/build` respectively. Along with a basic configuration in `docs/source/conf.py`, it will try to produce a Makefile, which you use to generate the documentation site with `make html`. If you already have Makefile, it will create a default Windows `make.bat`. In my case this wasn't useful, so I simply added a `docs` target to my existing Makefile as per the below:
+
+```Makefile
+.PHONY: install test lint clean build docs all
+.ONESHELL:
+
+...
+
+docs:
+	sphinx-apidoc --ext-autodoc -f -o docs/source hello "tests"
+	sphinx-build -M html docs/source docs/build
+
+docs-clean:
+	rm -rf docs/build/*
+...
+
+all: clean test lint install build docs
+```
+
+The quickstart will also create a `conf.py` and a baseline set of `.rst` documents. The `conf.py` file defines how Sphinx will behave and the baseline templates provide an initial template for the documentation site.
+
+Below is an extract of the `conf.py` file.
+
+```
+...
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../../hello'))
+sys.path.insert(0, os.path.abspath('../..'))
 
 
-https://packaging.python.org/en/latest/tutorials/creating-documentation/
 
+# -- Project information -----------------------------------------------------
 
-#### Tools quick reference
+project = 'cli-bumpversion-example'
+copyright = 'xxxx'
+author = 'xxx'
+
+# -- General configuration ---------------------------------------------------
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# ones.
+extensions = [
+    'sphinx.ext.napoleon',
+    'sphinx.ext.autodoc',
+    'sphinxcontrib.plantuml',
+    'sphinx_mdinclude',
+    'sphinx_needs',
+    'sphinxcontrib.test_reports'
+]
+
+# Add any paths that contain templates here, relative to this directory.
+templates_path = ['_templates']
+
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+# This pattern also affects html_static_path and html_extra_path.
+exclude_patterns = [
+    "hello.tests.*",
+
+]
+
+# -- Options for HTML output -------------------------------------------------
+
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+#
+html_theme = 'sphinx_rtd_theme'
+
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ['_static']
+
+```
+
+Below is an extract from the `index.rst` source file:
+
+```
+.. cli-bumpversion-example documentation master file, created by
+   sphinx-quickstart on Sun Sep 10 13:33:55 2023.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to cli-bumpversion-example's documentation!
+===================================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   modules
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+README
+======
+
+* :ref:`readme`
+
+Test Results
+============
+
+.. test-results:: ../../unittest_output.xml
+```
+
+From our `Makefile` once you run `make docs`, you'll observe that we pre-process into the source directory, some apidocs by invoking `sphinx-apidoc` leveraging the `autodoc` extension. [Autodoc](https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html) parses docstrings into package documentation in the reStructuredText format, which is the documentation format Sphinx uses to create the documentation site. Below is a file listing demonstrating this:
+
+```terminal
+.
+├── CHANGELOG.md
+├── LICENSE
+├── MANIFEST.in
+├── Makefile
+├── README.md
+├── azure-pipelines.yml
+├── docs
+│   ├── build
+│   └── source
+│       ├── _static
+│       ├── _templates
+│       ├── conf.py
+│       ├── hello.greeting.rst
+│       ├── hello.rst
+│       ├── hello.tests.rst
+│       ├── index.rst
+│       ├── modules.rst
+│       └── readme.rst
+├── hello
+│   ├── __init__.py
+│   ├- ...
+├── pyproject.toml
+├── requirements-dev.txt
+└── requirements.txt
+
+```
+
+As you can see from the above, sphinx operates from source files stored in the `docs/source` directory. We use these files to customize the documentation site as required. These files are checked into source control. The files generated into the `docs/build` directory can be added to `.gitignore` and should not be checked in (generally).
+
+Once this is complete, the `sphinx-build` command is executed to convert the rST templates into a documentation site. Below is a screenshot of the site
+
+![Readthedocs index](/assets/images/posts/awesome_python_packaging/Screenshot_Sphinx_Index.png){:class="img-fluid"}
+
+As you can see from the configuration, and the screenshot, I've included some additional information in the default site.
+
+To avoid duplicating useful overview information, especially because both Github and Azure Artifact do a reasonable job of rendering the `README.md`, I've included the `mdinclude` directive, which inserts the contents of the `README.md` into the overview page. the `mdinclude` directive is available via the `sphinx-mdinclude` plugin we installed and added in the `extensions` list in `conf.py`. 
+
+Additionally, while the software quality metrics (unit test and coverage reports) are available in the repo once built, unless they are explicitly published they are often hard to find and access. I've tried to include these details into the documentation site, and this is made possible with [Sphinx-Test-Reports](https://sphinx-test-reports.readthedocs.io/en/latest/).
+
+The coverage report is also available in the repo, and i've exported it into html so it can be read from the console at least, however there doesn't seem to be a Sphinx plugin that helps you render the coverage details in user documentation. Bummer!
+
+Sphinx is a static site generator, similar to [Jekyll](https://jekyllrb.com/), and [MkDocs](https://www.mkdocs.org/) is another compelling static site generator focused on project documentation. In this example I've focussed on Sphinx only because I found it to be quite capable, with a raft of extensions. Others can and should be explored, perhaps in another blog. Sphinx is capable, but reports are the learning curve can be quite steep. Your mileage may vary.
+
+As these tools all produce a static HTML site, hosting the generated documentation is a challenge in enterprise environments. These packages are obviously private and shouldn't be accessible from the public internet. Pushing the documentation, created as a [workflow artefact](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts), to a [Github Pages](https://github.com/actions/deploy-pages) site, under a file path for the specific version is easy and feasible, however, Github Pages are public by default, and you'll need to explore self-hosted options such as Gitlab, or Github Enterprise. If you are already self hosting, and have a repository presence on Github Enterprise somewhere, then publishing this documentation to a Github Pages site is a compelling option. 
+
+In the absence of somewhere well known to host project documentation, the alternative is to build the documentation and include it in the package source (sdist) archive. This is as simple as ensuring the `docs/build/html` directory is an entry in the `Manifest.in`, and that the site is built before the package is built. 
+
+The documentation is then available as part of the source distribution. This makes sense, and is also a good place to include the coverage site as well. However, from my point of view, and likely that of any user of that package, the documentation is hidden in the source package, and its certainly not 'easy' to get at that documentation without downloading, decompressing and opening those pages manually. Other than expressing something in the Readme about where one might find the documentation, there's no way to communicate how one might access it. Stepping back, despite it being a reasonable starting point, its a bit of a tragedy when great end-user documentation is hidden in the source archive, and takes effort and pain to access. It also detracts from the perception that the python projects are a serious business for your development team. So, I think evaluating compliant, centralised and compelling hosting options for auto-generated documentation is advisable.
+
+To sum up:
+
+---
+
+*Extensible and customizable **documentation generators for python packages** are available that can be **easily** installed and incorporated into a build workflow, producing **compelling documentation sites** alongside, and included in, other publishable artefacts. This documentation can be enriched by summary details in the `README.md` and from docstrings from within the code, **simplifying maintenance** and minimizing duplication.*
+
+---
+
+However:
+
+---
+
+*Between Github, Azure Artifact, and the generated documentation site, as to where package users should expect to find software quality metrics, it is possible to make **test reports and results available in the generated user documentation** (with Sphinx extensions such as Sphinx-Test-Reports). **This only goes so far, as pytest-cov coverage output is yet to be integrated.***
+
+---
+
+And finally:
+
+---
+
+*Investigate **hosting options** for project end-user documentation, as simply including the documentation in the package source distribution, is high friction, and counter-intuitive given the **internet-grade standard** for 3rd party projects.*
+
+---
+
+### Summary
+
+We've demonstrated that with github actions, and a few tools and techniques, we can leverage a compelling post-merge workflow to publish semantically versioned, and well documented python packages, to Azure Artefact, in a manner, and to a standard that approximates internet-grade python packages and projects. 
+
+It is easy to incorporate this workflow into python repositories, without loss of compliance in relation to repository standards and policies. The benefits of a package-centric system of work for your team and your enterprise are within reach, without expending a prohibitive amount of development effort. These benefits include establishing a high standard for python software development, attracting other budding and seasoned pythonistas, and creating a 'honey-pot' working environment that regulates and reinforces itself.
+
+Below is a brief summary of the objectives for a package-centric python system of work, and the relevant tools that can be incorporated to bring it to life.
 
 | Objective         | Tool              |
 |---------------------------------------|
@@ -555,8 +754,7 @@ https://packaging.python.org/en/latest/tutorials/creating-documentation/
 | Version auto-compute and git traceability / consistency   | Commitizen |
 | Change log                            | Commitizen |
 | Package Publishing                    | Twine and Azure Artifact | 
-| Package documentation                 | Sphinx |
-
+| Package documentation                 | Sphinx + plugins |
 
 
 ### Key Takeaways
@@ -565,6 +763,6 @@ Overall, with github actions and by incorporating a few key tools, it is easy to
 
 We can produce a workflow that automatically computes the next version, builds, publishes, ensures traceability, and generates a changelog along with high quality documentation.
 
-Although we can automatically produce great package documentation, it is not straightforward to host the documentation within the enterprise, for consumption by artefact users. There are also some gaps when it comes to capturing and displaying key software quality metrics in the documentation, such as coverage.
+Although we can automatically produce great package documentation, it is not straightforward to host the documentation within the enterprise, for consumption by artefact users. This is a key concern, because the alternative involves burying the documentation in a source package, which is not easy to access. There are also some gaps when it comes to capturing and displaying key software quality metrics in the documentation, such as coverage.
 
-But, with a high-maturity, self-reinforcing, package-oriented python system of work established, producing packages at a quality that approximates that which we find in the public domain, we signal to the surrounding organisation that our pythonistas mean business, and with trust, and safety in usage, encourage increased utility in our python artefacts.
+But, with a high-maturity, self-reinforcing, package-oriented python system of work established, producing packages at a quality that approximates that which we find in the public domain, signals to the surrounding organisation that our pythonistas mean business, and with trust, and safety in usage, encourage increased utility in our python artefacts.
