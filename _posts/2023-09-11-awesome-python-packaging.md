@@ -245,14 +245,14 @@ jobs:
         name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: <READ FROM SECRETS>
           debug: true
       - name: Generate access token
         uses: tibdex/github-app-token@v1
         id: get_installation_token
         with:
-          app_id: ${{ vars.VERSIONBUMP_APP_ID }}
-          private_key: ${{ secrets.VERSION_BUMP_TOKEN_PRIVATE_KEY }}
+          app_id: <READ FROM VARIABLES>
+          private_key: <READ FROM SECRETS>
       - name: "Push changes"
         env:
           GITHUB_TOKEN: ${{ steps.get_installation_token.outputs.token }}
@@ -273,8 +273,8 @@ jobs:
           file: .netrc
           content: |
             machine pkgs.dev.azure.com
-            login ${{ secrets.AZURE_ARTIFACTS_USERNAME }}
-            password ${{ secrets.AZURE_ARTIFACTS_PAT }}
+            login <READ FROM SECRETS>
+            password <READ FROM SECRETS>
       - name: Create .pypirc file
         uses: 1arp/create-a-file-action@0.2
         with:
@@ -335,34 +335,127 @@ Also, the `Description` panel, is sourced from the artifacts `README.md` file.
 
 All the files that were uploaded as part of the publishing step are visible and available for download.
 
+#### Consuming private packages in Azure DevOps.
 
+Let's try to consume these packages as we might normally. 
 
-So to get good traceability for published artefacts:
+```yaml
+trigger: none
+pr: none
+
+parameters:
+- name: feed
+  displayName: The artefact feed (project/feedname only)
+  type: string
+- name: version
+  displayName: The version we want
+  type: string
+  default: ''
+
+stages:
+  - stage: Download_Dependency
+    displayName: Download Dependency
+    jobs:
+      - deployment: Download_And_Execute_CLI
+        pool:
+          vmImage: ubuntu-latest
+        environment: dev
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: UsePythonVersion@0
+                  inputs:
+                    versionSpec: '3.9'
+
+                - task: PipAuthenticate@1
+                  inputs:
+                    artifactFeeds: <FEED>
+
+                - task: CmdLine@2
+                  displayName: Install specified version
+                  condition: ne(<VERSION>, '')
+                  inputs:
+                    script: |
+                      pip install -vvv cli-bumpversion-example==${{ parameters.version }} --index-url $(PIP_INDEX_URL)
+
+                - task: CmdLine@2
+                  displayName: Install latest version
+                  condition: eq(<VERSION>, '')
+                  inputs:
+                    script: |
+                      pip install -vvv cli-bumpversion-example --index-url $(PIP_INDEX_URL)
+
+                - script: |
+                    hello --help
+```
+
+The above pipeline allows the initiator to specify a specific version of the `cli-bumpversion-example` CLI tool to use. In the instance one is specified, it will attempt to download and install that version. Here is a screenshot of the pipeline initiation prompt after we import it into Azure DevOps Pipelines:
+
+![Azure DevOps Pipeline](/assets/images/posts/awesome_python_packaging/Screenshot_ADO_ConsumerPipelinePrompt.png){:class="img-fluid"}
+
+As you'll observe the pipeline exposes the feed path and the desired version as pipeline parameters. 
+
+Let's trigger it and see it in action:
+
+```
+Starting: Install specified version
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.212.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+Script contents:
+pip install -vvv cli-bumpversion-example==0.10.0 --index-url https://build:***@pkgs.dev.azure.com/gregsoertsz0832/gsoertsz/_packaging/cli-bumpversion-example-release/pypi/simple
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/vsts/work/_temp/1a6107d4-21f0-4a25-919b-73da0a44a624.sh
+Using pip 23.2.1 from /opt/hostedtoolcache/Python/3.9.18/x64/lib/python3.9/site-packages/pip (python 3.9)
+...
+Created temporary directory: /tmp/pip-unpack-jenjegge
+Installing collected packages: click, cli-bumpversion-example
+...
+```
+
+The pipeline then successfully executes the installed CLI tool just as we might if it were a 3rd party tool:
+
+```
+Generating script.
+Script contents:
+hello --help
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/vsts/work/_temp/2b9dbda8-6e59-43d7-8ecb-0b043bca8324.sh
+Usage: hello [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --debug
+  --help   Show this message and exit.
+
+Commands:
+  say-hello
+Finishing: CmdLine3
+
+```
+
+From the perspective of the consuming pipeline, it is quite trivial, and therefore on par with the usual experience to use an internally published, private package.
+
+There's a lot to review here, but in general:
 
 ---
 
-*Regardless of how you determine the version, and update the project's version strings, **register a github app**, and use it to commit and push the versioning details back upstream. This allows you to maintain your development policies within Github, but achieve superior traceability through automation.*
+* *Regardless of how you determine the version, and update the project's version strings, **register a github app**, and use it to commit and push the versioning details back upstream. This allows you to maintain your development policies within Github, but achieve superior traceability through automation.*
+    
+* *Given the **automatic** computing and updating of **version strings**, to **avoid retriggering** the github actions release workflow, ensure the **message** used to push the versioning and tag information back upstream **contains** a "skip workflow" **hint** as per [this link](https://docs.github.com/en/actions/managing-workflow-runs/skipping-workflow-runs)*
+
+* *Azure **Artifact** does a decent job of publishing metadata about a versioned python package. As a Python package catalog, it is **a good foundation for a mature package oriented system of work**.*
+
+* *Consuming private packages is **similar** to consuming external packages, as pip accepts additional python index URLs and Azure Artifact's feed URL's are **pip compatible***
 
 ---
 
-... and:
-
----
-
-*Given the **automatic** computing and updating of **version strings**, to **avoid retriggering** the github actions release workflow, ensure the **message** used to push the versioning and tag information back upstream **contains** a "skip workflow" **hint** as per [this link](https://docs.github.com/en/actions/managing-workflow-runs/skipping-workflow-runs)*
-
----
-
-... also:
-
-
----
-
-*Azure **Artifact** does a decent job of publishing metadata about a versioned python package. As a Python package catalog, it is **a good foundation for a mature package oriented system of work**.*
-
----
-
-At this point, our repository automatically publishes a versioned artefact, and ensures traceability by updating the repository with the related version information as an addressable tag. This is fine if you ever want to produce only one artefact. But, we are obviously going to want to produce more than one artefact and change it in different ways as the software evolves. 
+At this point, our repository automatically publishes a versioned artefact, that we proved that we could consume like any 3rd party package, and ensures traceability by updating the repository with the related version information as an addressable tag. This is fine if you ever want to produce only one artefact. But, we are obviously going to want to produce more than one artefact and change it in different ways as the software evolves. 
 
 #### Semver controls and changelog generation with commitizen
 
@@ -761,8 +854,8 @@ Below is a brief summary of the objectives for a package-centric python system o
 
 Overall, with github actions and by incorporating a few key tools, it is easy to set up python repositories to automatically produce internet-grade packages.
 
-We can produce a workflow that automatically computes the next version, builds, publishes, ensures traceability, and generates a changelog along with high quality documentation.
+We can produce a workflow that automatically computes the next version, builds, publishes, ensures traceability, and generates a changelog along with high quality documentation. The produced package is installable using `pip` directly from Azure Artifact, in just the same way as we consume 3rd party packages from the internet.
 
 Although we can automatically produce great package documentation, it is not straightforward to host the documentation within the enterprise, for consumption by artefact users. This is a key concern, because the alternative involves burying the documentation in a source package, which is not easy to access. There are also some gaps when it comes to capturing and displaying key software quality metrics in the documentation, such as coverage.
 
-But, with a high-maturity, self-reinforcing, package-oriented python system of work established, producing packages at a quality that approximates that which we find in the public domain, signals to the surrounding organisation that our pythonistas mean business, and with trust, and safety in usage, encourage increased utility in our python artefacts.
+But, with a high-maturity, self-reinforcing, package-oriented python system of work established, producing packages at a quality that approximates that which we find in the public domain, signals to the surrounding organisation that our pythonistas mean business, and with trust, and safety in usage, encourages increased utility in our python artefacts.
