@@ -4,9 +4,9 @@ layout: default
 
 ## Copyright
 <hr/>
-© Greg Soertsz and contributors 2022
+© Greg Soertsz and contributors 2026
 
-Effective as of Nov. 2022
+Effective as of April 2026
 
 Except as permitted by the copyright law applicable to you, you may not reproduce or communicate any of the content on this website, including files downloadable from this website, without the permission of the copyright owner.
 
