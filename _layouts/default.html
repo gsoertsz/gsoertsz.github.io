@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
+<html lang="{{ site.lang | default: "en-US" }}" data-bs-theme="light">
 {% seo %}
   <head>
     <!-- Google Tag Manager -->
@@ -21,64 +21,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <title>{{ page.title }} - {{ site.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href='{{ "/assets/css/main.css" | relative_url }}'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <link rel="stylesheet" id="hljs-light" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <link rel="stylesheet" id="hljs-dark" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" disabled>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-
-    <!-- and it's easy to individually load additional languages -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
-
-    <script>hljs.highlightAll();</script>
     <link rel="shortcut icon" type="image/png" href="/assets/favicon.png">
+    <script>
+      // Dark mode initialization before any visible flash
+      (function() {
+        const storedTheme = localStorage.getItem('theme');
+        let theme = 'light';
+        
+        if (storedTheme) {
+          theme = storedTheme;
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          theme = 'dark';
+        }
+        
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        updateHighlightJsTheme(theme);
+      })();
+      
+      function updateHighlightJsTheme(theme) {
+        const lightLink = document.getElementById('hljs-light');
+        const darkLink = document.getElementById('hljs-dark');
+        if (theme === 'dark') {
+          darkLink.disabled = false;
+          lightLink.disabled = true;
+        } else {
+          darkLink.disabled = true;
+          lightLink.disabled = false;
+        }
+      }
+    </script>
   </head>
   <body class="d-flex flex-column min-vh-100">
-        <!-- Google Tag Manager (noscript) -->
+    <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNLNLGVP"
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- End Google Tag Manager (noscript) -->
-    <header>
-      <div class="container fixed-top">
-        <div class="row justify-content-centered">
-          <div class="col">
-          </div>
-          <div class="col-12">
-            {% include navbar.html %}
-          </div>
-          <div class="col">
-          </div>
-        </div>
-      </div>
+    
+    <header class="sticky-top">
+      {% include navbar.html %}
     </header>
-    <main>
-      <div class="row justify-content-centered" style="margin-top: 20px;">
-        <div class="col">
-        </div>
-        <div class="col-12">
-          <div class="container">
-            <div class="row" style="margin-bottom: 65px; margin-top: 60px;">
-              <div class="col-9 border-right" style="margin-left: 15px; margin-right: 15px;">
-                {{ content }}
-              </div>
-              <div class="col-3">
-                {% include sidebar.html %}
-              </div>
-            </div>
+
+    <main class="flex-grow-1 py-5">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-8">
+            {{ content }}
           </div>
-        </div>
-        <div class="col">
+          <div class="col-lg-4">
+            {% include sidebar.html %}
+          </div>
         </div>
       </div>
     </main>
-    <footer class="mt-auto fixed-bottom">
-      <div class="container">
-        <div class="row justify-content-centered">
-          <div class="col"></div>
-          <div class="col-12"> 
-              {% include footer.html %}
-          </div>
-          <div class="col"></div>
-        </div>
-      </div>
+
+    <footer class="bg-body-tertiary border-top mt-5 py-5">
+      {% include footer.html %}
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

@@ -1,0 +1,73 @@
+<aside class="d-flex flex-column gap-4">
+  <!-- Recent Posts Widget -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header border-bottom">
+      <h5 class="mb-0">
+        <i class="bi bi-bookmark"></i> Recent Posts
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <ul class="list-group list-group-flush">
+        {% for post in site.posts limit: 5 %}
+        <li class="list-group-item border-0 ps-3 pe-3">
+          <a href="{{ post.url }}" class="text-decoration-none stretched-link">
+            {{ post.title }}
+          </a>
+          <div class="small text-body-secondary mt-1">
+            {{ post.date | date: "%b %d, %Y" }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Categories Widget -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header border-bottom">
+      <h5 class="mb-0">
+        <i class="bi bi-tag"></i> Categories
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="d-flex flex-wrap gap-2">
+        {% assign categories = site.posts | map: 'categories' | join: ',' | split: ',' | uniq | sort %}
+        {% for category in categories %}
+          {% if category != empty %}
+          <span class="badge bg-secondary">{{ category | strip }}</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- About Widget -->
+  <div class="card border-0 shadow-sm about-widget">
+    <div class="card-body">
+      <h5 class="card-title mb-2">
+        <i class="bi bi-info-circle"></i> About This Blog
+      </h5>
+      <p class="card-text small mb-0">
+        {{ site.description | default: 'A blog about cloud, data, and software engineering.' }}
+      </p>
+      <a href="/about.html" class="btn btn-sm btn-primary mt-3">
+        Learn More <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Subscribe Widget -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body text-center">
+      <h5 class="mb-3">
+        <i class="bi bi-rss"></i> Subscribe
+      </h5>
+      <p class="small text-body-secondary mb-3">
+        Get updates delivered to your inbox
+      </p>
+      <a href="/feed.xml" class="btn btn-outline-primary btn-sm">
+        RSS Feed
+      </a>
+    </div>
+  </div>
+</aside>
