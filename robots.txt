@@ -1,0 +1,6 @@
+# robots.txt
+# Prevent all crawlers from indexing the site.
+# This includes generic bots such as GPT/LLM crawlers.
+
+User-agent: *
+Disallow: /
