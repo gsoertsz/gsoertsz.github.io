@@ -4,62 +4,65 @@ title: Home
 ---
 
 {% for post in paginator.posts %}
-  <div class="card mt-2 mb-2" >
-    <div class="card-body">
-        <h5 class="card-title"><a href="{{ post.url }}">{{ post.title }}</a></h5>
-        <h6 class="card-subtitle mb-2 text-muted"><span class="date"><i>{{ post.date | date_to_long_string }}</i></span></h6>
-        <p class="card-text">{{ post.excerpt }}</p>
+  <a href="{{ post.url }}" class="post-card">
+    <h3 class="post-title">{{ post.title }}</h3>
+    <div class="post-meta">
+      <span><i class="bi bi-calendar3"></i> {{ post.date | date_to_long_string }}</span>
+      {% if post.categories %}
+        {% for category in post.categories %}
+        <span class="badge bg-primary-subtle text-primary">{{ category }}</span>
+        {% endfor %}
+      {% endif %}
     </div>
-  </div>
+    <p class="post-excerpt">{{ post.excerpt }}</p>
+  </a>
 {% endfor %}
 
 {% if paginator.total_pages > 1 %}
-<nav>
-    <ul class="pagination">
+<nav class="mt-5">
+    <ul class="pagination justify-content-center">
         <!-- handle previous page link -->
         {% if paginator.previous_page %}
             <li class="page-item">
-                <a href="{{ paginator.previous_page_path | relative_url }}">
-                    <span class="page-link">&laquo; Prev</span>
+                <a class="page-link" href="{{ paginator.previous_page_path | relative_url }}">
+                    <i class="bi bi-chevron-left"></i> Previous
                 </a>
             </li>
         {% else %}
             <li class="page-item disabled">
-                <span class="page-link">&laquo; Prev</span>
+                <span class="page-link"><i class="bi bi-chevron-left"></i> Previous</span>
             </li>
         {% endif %}
 
         {% for page in (1..paginator.total_pages) %}
             {% if page == paginator.page %}
                 <li class="page-item active">
-                    <span class="page-link"><em>{{ page }}</em></span>
+                    <span class="page-link">{{ page }}</span>
                 </li>
             {% elsif page == 1 %}
                 <li class="page-item">
-                    <a href="{{ '/blog' | relative_url }}">
-                        <span class="page-link"><em>{{ page }}</em><span>
-                    </a>
+                    <a class="page-link" href="{{ '/index.html' | relative_url }}">{{ page }}</a>
                 </li>
             {% else %}
                 <li class="page-item">
-                    <a href="{{ site.paginate_path | relative_url | replace: ':num', page }}">
-                        <span class="page-link"><em>{{ page }}</em></span>
-                    </a>
+                    <a class="page-link" href="{{ site.paginate_path | relative_url | replace: ':num', page }}">{{ page }}</a>
                 </li>
             {% endif %}
         {% endfor %}
 
+        <!-- handle next page link -->
         {% if paginator.next_page %}
             <li class="page-item">
-                <a href="{{ paginator.next_page_path | relative_url }}">
-                    <span class="page-link">Next &raquo;</span>
+                <a class="page-link" href="{{ paginator.next_page_path | relative_url }}">
+                    Next <i class="bi bi-chevron-right"></i>
                 </a>
             </li>
         {% else %}
             <li class="page-item disabled">
-                <span class="page-link">Next &raquo;</span>
+                <span class="page-link">Next <i class="bi bi-chevron-right"></i></span>
             </li>
         {% endif %}
     </ul>
 </nav>
+
 {% endif %}

@@ -2,16 +2,37 @@
 layout: default
 ---
 <article class="post">
-  <h2>{{ page.title }}</h2>
-  <div class="date">
-    <time datetime="{{ post.date | date: "%Y-%m-%d" }}">{{ post.date | date_to_long_string }}</time>
-    <i>{{ page.date | date: "%B %e, %Y" }}</i>
-  </div>
-  <div class="text">
-   <strong>Categories:</strong> {{ page.categories | join: ", " }}
-  </div>
-  <hr class="mt-2 mb-4"/>
-  <div class="entry">
+  <header class="mb-4">
+    <h1 class="display-5 fw-bold mb-3">{{ page.title }}</h1>
+    <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+      <time datetime="{{ page.date | date: "%Y-%m-%d" }}" class="text-body-secondary">
+        <i class="bi bi-calendar3"></i> {{ page.date | date_to_long_string }}
+      </time>
+      {% if page.categories %}
+      <div>
+        {% for category in page.categories %}
+        <span class="badge bg-primary-subtle text-primary">{{ category }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <hr class="my-4">
+  </header>
+
+  <div class="entry fs-5 lh-lg">
     {{ content }}
   </div>
+
+  <hr class="my-5">
+  
+  <footer class="post-footer">
+    <div class="d-flex gap-2 flex-wrap">
+      {% if page.categories %}
+        <strong>Categories:</strong>
+        {% for category in page.categories %}
+          <span class="badge bg-secondary">{{ category }}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </footer>
 </article>
